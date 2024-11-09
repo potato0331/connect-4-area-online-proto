@@ -19,15 +19,15 @@
             <div id="wrongmove_tost">
                 착수 불가한 위치 입니다.
             </div>
+            <div id="notthisturn_tost">
+                상대 플레이어의 차례 입니다.
+            </div>
             <canvas class="canvas" width="648" height="648">
                 <!-- 보드판그리기 -->
             </canvas>
         </div>
 
         <div class="button_area">
-            <button class="button reset">리셋</button>
-            <button class="button undo">무르기</button>
-
             <!-- 여기서부터 팝업버튼 만드려는 똥꼬쇼 -->
             <input type="checkbox" id="rule_popup">
             <label for="rule_popup">규칙</label>
@@ -51,20 +51,6 @@
                         version : 1.0.0
                     </p>
                 </div>
-            </div>
-        </div>
-
-        <div class="setting_area">
-            <div class="firstrestrict" title="리셋시 적용">
-                <span>선공 제한 구역:</span>
-                <input type="radio" name="firstrestrict" id="7*7" checked>
-                <label for="5*5">7x7</label>
-                <input type="radio" name="firstrestrict" id="5*5" checked>
-                <label for="5*5">5x5</label>
-                <input type="radio" name="firstrestrict" id="3*3">
-                <label for="5*5">3x3</label>
-                <input type="radio" name="firstrestrict" id="none">
-                <label for="5*5">없음</label>
             </div>
         </div>
     </div>

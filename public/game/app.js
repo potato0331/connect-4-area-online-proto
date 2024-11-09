@@ -1,53 +1,14 @@
 const canvas = document.querySelector(".canvas");
 const context = canvas.getContext("2d");
-const resetButton = document.querySelector(".reset");
-const undoButton = document.querySelector(".undo");
-const firstrestrictButton = document.getElementsByName("firstrestrict");
 const moveSound = new Audio("./resources/TAK.wav"); //음질 개구림 대체할거 어디서찾니..
 const errorSound = new Audio("./resources/error.mp3");
 const tostmessage = document.getElementById("wrongmove_tost");
+const tostmessage2 = document.getElementById("notthisturn_tost");
 
-let firstrestrict;
-if (document.getElementById("7*7").checked) {
-  firstrestrict = 7;
-} else if (document.getElementById("5*5").checked) {
-  firstrestrict = 5;
-} else if (document.getElementById("3*3").checked) {
-  firstrestrict = 3;
-} else {
-  firstrestrict = -1;
-} //최초의 firstrestrict값을 설정함 (뭐 사실 5*5기본설정인시점에 그냥 5로설정하고 넘어가도 되긴할겁니다. 이게 더 안전하긴함)
-
-for (let i = 0; i < firstrestrictButton.length; i++) {
-  firstrestrictButton[i].addEventListener("click", () => {
-    if (firstrestrictButton[i].id == "7*7") {
-      firstrestrict = 7;
-    }
-    if (firstrestrictButton[i].id == "5*5") {
-      firstrestrict = 5;
-    }
-    if (firstrestrictButton[i].id == "3*3") {
-      firstrestrict = 3;
-    }
-    if (firstrestrictButton[i].id == "none") {
-      firstrestrict = -1;
-    }
-  });
-} //설정 변경시마다 firstrestrict의 값을 바꿈
+let firstrestrict = 5;
 
 let area4game = new area4(firstrestrict);
 area4game.drawboard(context);
-
-resetButton.addEventListener("click", () => {
-  area4game = new area4(firstrestrict);
-  area4game.drawboard(context);
-});
-
-undoButton.addEventListener("click", () => {
-  area4game.undoStone();
-  area4game.gameEndFlag = 0; // 게임이 끝난채로 무르기했을시, 게임이 다시 진행되게끔 설정
-  area4game.drawboard(context);
-});
 
 canvas.addEventListener("click", (e) => {
   if (area4game.gameEndFlag) {
@@ -78,6 +39,9 @@ canvas.addEventListener("click", (e) => {
 
   area4game.putStone(inputX, inputY); //수 정보 입력
   moveSound.play(); //탁...탁...탁...
+
+  socket.emit("putStone", area4game.mainBoard[area4game.mainBoard.length - 1]); //moveinfo값을 서버에 전송
+
   area4game.drawboard(context);
 
   if (area4game.checkWin(inputX, inputY)) {

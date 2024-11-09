@@ -12,9 +12,14 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("a user connected");
+  console.log("a user connected, user id = " + socket.id);
+
+  socket.on("putStone", (moveinfo) => {
+    console.log(moveinfo);
+  });
+
   socket.on("disconnect", () => {
-    console.log("user disconnected");
+    console.log("user disconnected, user id = " + socket.id);
   });
 });
 
