@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Area4Connect</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="sytle.css">
+</head>
+
+<body>
+    <div class="logo_area">
+        <a href="index.html">
+            <image class="logo" id="main_logo" src="./resources/logo.png">
+                <!-- 원본 크기 567*304 -->
+        </a>
+    </div>
+    <div class="container">
+        <div class="main_board">
+            <div id="wrongmove_tost">
+                착수 불가한 위치 입니다.
+            </div>
+            <canvas class="canvas" width="648" height="648">
+                <!-- 보드판그리기 -->
+            </canvas>
+        </div>
+
+        <div class="button_area">
+            <button class="button reset">리셋</button>
+            <button class="button undo">무르기</button>
+
+            <!-- 여기서부터 팝업버튼 만드려는 똥꼬쇼 -->
+            <input type="checkbox" id="rule_popup">
+            <label for="rule_popup">규칙</label>
+            <div id="layer_bg">
+                <!-- 참고한것: https://green-grapes.tistory.com/entry/HTML-CSS-%EB%A0%88%EC%9D%B4%EC%96%B4-%ED%8C%9D%EC%97%85-%EB%A7%8C%EB%93%A4%EA%B8%B0 -->
+                <div id="popup">
+                    <h2>
+                        GAME's RULE
+                        <label for="rule_popup">X</label>
+                    </h2>
+                    <p>
+                        게임의 목표는 4개의 돌을 한 직선으로 완성하는 것입니다.<br><br>
+                        다만, 일반적인 오목 게임과는 다르게, 상대의 수에 따라서 둘 수 있는 영역이 제한됩니다.<br><br>
+                        예를 들어, 상대가 이전 수로 어떤 3*3 영역중, 좌상단에 해당하는 칸에 돌을 두었다면,<br>
+                        당신은 전체 9*9 칸중, 좌상단 영역에 해당하는 3*3 영역중 한 곳을 골라 수를 두어야 합니다.<br>
+                        상대가 영역의 중앙에 두었다면, 중앙의 3*3중 한 칸을 선택해 두어야 합니다.<br><br>
+                        만일, 영역이 가득차 돌을 둘 수 없는 경우에는, 아무곳에나 착수 할 수 있습니다.<br>
+                        또한, 첫 수의 경우에는 중앙의 5*5영역(기본)을 제외한 어떤 곳이든 선택해 둘 수 있습니다.<br><br>
+                    </p>
+                    <p id="version">
+                        version : 1.0.0
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="setting_area">
+            <div class="firstrestrict" title="리셋시 적용">
+                <span>선공 제한 구역:</span>
+                <input type="radio" name="firstrestrict" id="7*7" checked>
+                <label for="5*5">7x7</label>
+                <input type="radio" name="firstrestrict" id="5*5" checked>
+                <label for="5*5">5x5</label>
+                <input type="radio" name="firstrestrict" id="3*3">
+                <label for="5*5">3x3</label>
+                <input type="radio" name="firstrestrict" id="none">
+                <label for="5*5">없음</label>
+            </div>
+        </div>
+    </div>
+    <script src="game.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
