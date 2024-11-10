@@ -22,8 +22,11 @@
             <div id="notthisturn_tost">
                 상대 플레이어의 차례 입니다.
             </div>
+            <div id="playercolor_tost"> 
+                <!-- 당신은 ??? 입니다/하단에 구현되있음 -->
+            </div>
             <canvas class="canvas" width="648" height="648">
-                <!-- 보드판그리기 -->
+                <!-- 보드판그리기, game.js에 구현되있음 -->
             </canvas>
         </div>
 
@@ -54,12 +57,10 @@
             </div>
         </div>
     </div>
-    <script src="game/game.js"></script>
-    <script src="game/app.js"></script>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script> var socket = io(); </script>
-
+    <script src="/game/game.js"></script>
+    <script src="/game/app.js"></script>
 </body>
 
 </html>
