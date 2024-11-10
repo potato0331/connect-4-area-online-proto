@@ -57,5 +57,6 @@ canvas.addEventListener("click", (e) => {
   }
 
   let MoveInfo = area4game.putStone(inputX,inputY);
+  moveSound.play();
   socket.emit("playerMove" , MoveInfo);
 });
