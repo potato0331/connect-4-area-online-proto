@@ -69,6 +69,7 @@ io.on("connection", (socket) => {
 
   socket.on("playerMove" , (MoveInfo) =>{
     moveHistory.push(MoveInfo);
+    boardArray[MoveInfo.y][MoveInfo.x] = MoveInfo.color;
     io.emit("moveReceived",moveHistory);
   });
   //moveinfo를 movehistory에 저장하고, movehistory를 모든 플레이어에게 전송

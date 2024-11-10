@@ -33,7 +33,7 @@ class area4 {
       MoveInfo.y = inputY;
       MoveInfo.color = this.playerColor;
       return MoveInfo;
-      //그 수의 정보를 mainBoard에 입력
+      //moveInfo 객체를 생성
     }
 
     checkTurn(){
