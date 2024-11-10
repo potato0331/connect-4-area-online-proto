@@ -26,19 +26,36 @@ socket.on("moveReceived",(moveHistory) =>{
 
 canvas.addEventListener("click", (e) => {
   let { inputX, inputY } = area4game.getPosition(e.offsetX, e.offsetY);
+
   if (inputX < 0 || inputX > 8 || inputY < 0 || inputY > 8) {
     return;
   } //보드판 밖 클릭 시 무시
+
   if (area4game.playerColor == "spectater"){
     return;
   } //관전자 일시 무시
-  if ((area4game.mainBoard.length != 0 && area4game.mainBoard[area4game.mainBoard.length - 1].color == area4game.playerColor) ||
-     (area4game.mainBoard.length == 0 && area4game.playerColor == "white")){
+
+  if(!area4game.checkTurn()){
     tostmessage_wrongturn.classList.add("active");
     setTimeout(() => {
     tostmessage_wrongturn.classList.remove("active");}, 500);
     return;
-  } // 만일 이전 턴의 색이 나의 색과 같거나(연속으로 착수를 두번하거나), 첫 턴이고 백인데 착수하려 하면 토스트메세지를 띄우고 무시
+  }
+  
+  if (
+    area4game
+      .getAllAvailableMove()
+      .find((element) => element == inputX + 9 * inputY) === undefined
+  ) { // getAllAvailableMove 함수에서 지금 착수 한 곳의 index값을 찾을 수 없다면
+    //착수 할 수 없는 곳 이므로 클릭시 무시
+    errorSound.play();
+    tostmessage.classList.add("active");
+    setTimeout(() => {
+      tostmessage.classList.remove("active");
+    }, 500);
+    //토스트메세지 띄우고 0.5초후 사라지게함
+    return;
+  }
 
   let MoveInfo = area4game.putStone(inputX,inputY);
   socket.emit("playerMove" , MoveInfo);

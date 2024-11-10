@@ -36,6 +36,88 @@ class area4 {
       //그 수의 정보를 mainBoard에 입력
     }
 
+    checkTurn(){
+      if (this.mainBoard.length != 0 && this.mainBoard[this.mainBoard.length - 1].color == this.playerColor){
+        return false;
+      }//첫 턴이 아니고, 이전턴의 색이 내 색과 같으면 false반환
+      if (this.mainBoard.length == 0 && this.playerColor == "white"){
+        return false;
+      }//첫 턴이고, 백(후수)이면 false반환
+      return true;
+    }//자기 차례이면 true반환
+
+    checkArea(MoveInfo) {
+      return { AreaX: MoveInfo.x % 3, AreaY: MoveInfo.y % 3 };
+    } //두어진 수의 영역 확인하기
+
+    getAllAvailableMove() {
+      //각각의 칸을 0~80의 숫자로 표현
+      //인덱스->좌표 변환식은 x=index % 9 y=Math.floor(index / 9)
+      //좌표->인덱스 변환식은 x+9*y
+      let AvailableMoveList = new Array();
+      if (this.mainBoard.length == 0) {
+        //첫 수일경우
+        let restrictDistancefromCenter = (this.firstrestrict + 1) / 2;
+        let upperbound = 4 + restrictDistancefromCenter;
+        let lowerbound = 4 - restrictDistancefromCenter;
+        for (let i = 0; i < 81; i++) {
+          if (
+            !(
+              i % 9 > lowerbound &&
+              i % 9 < upperbound &&
+              Math.floor(i / 9) > lowerbound &&
+              Math.floor(i / 9) < upperbound
+            )
+          ) {
+            AvailableMoveList.push(i);
+          }
+        }
+      } else {
+        // 첫 수가 아닐경우
+        let { AreaX, AreaY } = this.checkArea(
+          this.mainBoard[this.mainBoard.length - 1]
+        );
+        let NWsquare = 3 * AreaX + 27 * AreaY;
+        let AvailableArea = [NWsquare, NWsquare + 1, NWsquare + 2,
+                            NWsquare + 9, NWsquare + 10, NWsquare + 11,
+                            NWsquare + 18, NWsquare + 19, NWsquare + 20,];
+        // 착수 가능한 영역 안 칸들의 인덱스 리스트
+        for (let i of AvailableArea) {
+          let occupied = this.mainBoard.find(
+            (point) => point.x == i % 9 && point.y == Math.floor(i / 9)
+          );
+          if (occupied === undefined) {
+            AvailableMoveList.push(i);
+          }
+        }
+      }
+  
+      if (AvailableMoveList.length == 0) {
+        //만약 영역이 가득차 착수가 불가능 하다면, 겹치는 칸을 제외하고 전부 착수가능
+        for (let i = 0; i < 81; i++) {
+          let occupied = this.mainBoard.find(
+            (point) => point.x == i % 9 && point.y == Math.floor(i / 9)
+          );
+          if (occupied === undefined) {
+            AvailableMoveList.push(i);
+          }
+        }
+      }
+      return AvailableMoveList;
+    }
+  
+    drawAvailableMove(ctx, MoveList) {
+      for (let i of MoveList) {
+        //i는 getAllAvailableMove함수의 결과값인 인덱스 값의 집합
+        let { boardX, boardY } = this.getBoardPosition(i % 9, Math.floor(i / 9));
+        boardX -= 29;
+        boardY -= 29; // 사각형 크기의 절반-getBoardPosition함수가 구해다주는 위치가 사각형의 중앙이기 때문에, 위치를 좌상단으로 옮겨줘야 함
+        ctx.strokeStyle = "Yellow";
+        ctx.lineWidth = 4;
+        ctx.strokeRect(boardX, boardY, 58, 58);
+      }
+    }
+
     drawStone(ctx, MoveInfo) {
       let { boardX, boardY } = this.getBoardPosition(MoveInfo.x, MoveInfo.y);
       //돌 위치 계산
@@ -109,6 +191,11 @@ class area4 {
         ctx.fill(); // 색 채우기
       } //구석에 플레이어 색상 표시
       /** 여기까지 보드판 영역**/
+
+      if (!this.gameEndFlag && this.checkTurn()) {
+        //게임이 끝난게 아니고, 나의 차례라면,
+        this.drawAvailableMove(ctx, this.getAllAvailableMove());
+      }
   
       for (let MoveInfo of this.mainBoard) {
         this.drawStone(ctx, MoveInfo);
