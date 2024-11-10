@@ -39,14 +39,13 @@ canvas.addEventListener("click", (e) => {
     tostmessage_wrongturn.classList.add("active");
     setTimeout(() => {
     tostmessage_wrongturn.classList.remove("active");}, 500);
+    errorSound.play();
     return;
   }
-  
-  if (
-    area4game
-      .getAllAvailableMove()
-      .find((element) => element == inputX + 9 * inputY) === undefined
-  ) { // getAllAvailableMove 함수에서 지금 착수 한 곳의 index값을 찾을 수 없다면
+
+  if (area4game
+    .getAllAvailableMove()
+    .find((element) => element == inputX + 9 * inputY) === undefined) { // getAllAvailableMove 함수에서 지금 착수 한 곳의 index값을 찾을 수 없다면
     //착수 할 수 없는 곳 이므로 클릭시 무시
     errorSound.play();
     tostmessage.classList.add("active");
