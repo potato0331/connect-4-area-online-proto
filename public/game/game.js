@@ -76,7 +76,7 @@ class area4 {
         let { AreaX, AreaY } = this.checkArea(
           this.mainBoard[this.mainBoard.length - 1]
         );
-        let NWsquare = 3 * AreaX + 27 * AreaY;
+        let NWsquare = 3 * AreaX + 27 * AreaY;//가장 왼쪽 위 칸의 인덱스값을 찾아냄
         let AvailableArea = [NWsquare, NWsquare + 1, NWsquare + 2,
                             NWsquare + 9, NWsquare + 10, NWsquare + 11,
                             NWsquare + 18, NWsquare + 19, NWsquare + 20,];
