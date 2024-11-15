@@ -114,11 +114,31 @@ io.on("connection", (socket) => {
     console.log(playerList);
 
     if (playerList.black == 0 && playerList.white == 0){
-      gameReset()
-      console.log("resetting game...")
+      gameReset();
+      console.log("resetting game...(empty room)");
       io.emit("moveReceived",moveHistory);
     } // 플레이어가 아무도 없을 시 리셋
   });
+
+  socket.on("reset" , () => {
+    gameReset();
+    io.emit("resetted", moveHistory);
+    console.log("resetting game...(player control)");
+  })
+
+  socket.on("undo" , () => {
+    let boardX = moveHistory[moveHistory.length - 1].x;
+    let boardY = moveHistory[moveHistory.length - 1].y;
+    boardArray[boardY][boardX] = " "; //boardarray에서 돌 제거
+    moveHistory.pop();//moveHistory에서 돌 제거
+    io.emit("undid",moveHistory);
+    console.log("undo stone...")
+  })
+
+  socket.on("resign" , (color) => {
+    io.emit("resigned", color);
+    console.log(color + " resigned");
+  })
 
   socket.on("playerMove" , (MoveInfo) =>{
     moveHistory.push(MoveInfo);

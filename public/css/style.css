@@ -77,6 +77,10 @@
   border-radius: 5px;
 }
 
+#resign {
+  background: red;
+}
+
 /* 설정구역 */
 .setting_area {
   margin-top: 5px;

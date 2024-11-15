@@ -3,12 +3,30 @@ const context = canvas.getContext("2d");
 const moveSound = new Audio("./resources/TAK.wav"); //음질 개구림 대체할거 어디서찾니..
 const errorSound = new Audio("./resources/error.mp3");
 const tostmessage = document.getElementById("tost_message");
+const resetButton = document.querySelector(".reset");
+const undoButton = document.querySelector(".undo");
+const resignButton = document.querySelector(".resign");
 
 var socket = io(); 
 var area4game;
 
+resetButton.addEventListener("click", () => {
+  socket.emit("reset");
+})
+
+undoButton.addEventListener("click", () => {
+  if(area4game.mainBoard.length == 0) {
+    return;
+  }
+  socket.emit("undo");
+})
+
+resignButton.addEventListener("click", () => {
+  socket.emit("resign", area4game.playerColor);
+})
+
 socket.on("connected",(gameInfo) =>{
-  tostmessage.innerHTML="당신은 "+gameInfo.color+" 입니다";
+  tostmessage.innerHTML="당신은 "+gameInfo.color+" 입니다.";
   tostmessage.classList.add("active");
   setTimeout(() => { tostmessage.classList.remove("active");}, 1500);
   area4game = new area4();
@@ -20,15 +38,14 @@ socket.on("connected",(gameInfo) =>{
 socket.on("moveReceived",(moveHistory) => {
   area4game.mainBoard = moveHistory;
   area4game.drawboard(context);
-})
+})//수의 변경사항이 있으면, 서버에서 수 정보를 받아옴
 
 socket.on("playerWin",(color) => {
-  console.log("외않댄대");
-  tostmessage.innerHTML=color.toUpperCase()+" 플레이어의 승리 입니다!";
+  tostmessage.innerHTML = color.toUpperCase()+" 플레이어의 승리 입니다!";
   tostmessage.classList.add("active");
   setTimeout(() => { tostmessage.classList.remove("active");}, 1500);
   area4game.gameEndFlag = true;
-  area4game.drawboard()
+  area4game.drawboard(context);
 })
 
 socket.on("playerDraw",() => {
@@ -36,7 +53,31 @@ socket.on("playerDraw",() => {
   tostmessage.classList.add("active");
   setTimeout(() => { tostmessage.classList.remove("active");}, 1500);
   area4game.gameEndFlag = true;
-  area4game.drawboard()
+  area4game.drawboard(context);
+})
+
+socket.on("resigned", (color) => {
+  tostmessage.innerHTML = color.toUpperCase()+" 플레이어가 기권하였습니다.";
+  tostmessage.classList.add("active");
+  setTimeout(() => { tostmessage.classList.remove("active");}, 1500);
+  area4game.gameEndFlag = true;
+  area4game.drawboard(context);
+})
+
+socket.on("undid", (moveHistory) => {
+  area4game.mainBoard = moveHistory;
+  area4game.gameEndFlag = false;
+  area4game.drawboard(context);
+})
+
+socket.on("resetted", (moveHistory) => {
+  area4game.mainBoard = moveHistory;
+  area4game.gameEndFlag = false;
+  area4game.drawboard(context);
+  tostmessage.innerHTML="리셋되었습니다.";
+    tostmessage.classList.add("active");
+    setTimeout(() => {
+    tostmessage.classList.remove("active");}, 500);
 })
 
 canvas.addEventListener("click", (e) => {
