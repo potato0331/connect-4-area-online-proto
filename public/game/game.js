@@ -4,11 +4,10 @@ class area4 {
     WHITE = "white"; //가이드에서 하래서 했는데 그래서 이거 ㅅㅂ 왜하는거임 상수선언의 의의란 뭘가...
     blockinterval = 68;
     sideMargin = 18; //"왼쪽으로 1픽셀만 옮겨주세요!"가 왜 죽일놈인지 알거같기도 합니다
-    gameEndFlag = false;
   
     mainBoard = new Array();
     playerColor;
-  
+    gameEndFlag = false;
     firstrestrict = 5;
 
     getPosition(offsetX, offsetY) {
@@ -131,6 +130,20 @@ class area4 {
       ctx.arc(boardX, boardY, 30, 0, 2 * Math.PI);
       ctx.fill(); // 색 채우기
     }
+
+    drawLastStone(ctx, MoveInfo) {
+      if (this.mainBoard.length == 0) {
+        return;
+      }
+      let { boardX, boardY } = this.getBoardPosition(
+        this.mainBoard[this.mainBoard.length - 1].x,
+        this.mainBoard[this.mainBoard.length - 1].y
+      );
+      ctx.beginPath(); //새 선 그릴 준비
+      ctx.arc(boardX, boardY, 5, 0, 2 * Math.PI);
+      ctx.fillStyle = MoveInfo.color == "black" ? "white" : "black";
+      ctx.fill(); // 색 채우기
+    }
   
     drawboard(ctx) {
       ctx.clearRect(0, 0, 648, 648); //보드영역 지우기
@@ -201,6 +214,8 @@ class area4 {
         this.drawStone(ctx, MoveInfo);
       }
       // 바둑알 그리기
-  
+
+      this.drawLastStone(ctx, this.mainBoard[this.mainBoard.length - 1]);
+      //마지막 착수된 위치 표시
     }
   }

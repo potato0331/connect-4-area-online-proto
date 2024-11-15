@@ -15,6 +15,59 @@ var playerList = {
   spectater : new Array()
 };
 
+function checkWinOnOneDirection(boardX, boardY, color, x, y) {
+  //x,y는 가로방향시(1,0) 세로시(0,1), 대각선(1,1),(1,-1)
+  let count = 0;
+  let winFlag = false;
+  for (let i = 1; i < 4; i++) {
+    if (
+      boardX - i * x < 0 ||
+      boardX - i * x > 8 ||
+      boardY - i * y < 0 ||
+      boardY - i * y > 8
+    ) {
+      //보드판 바깥이면 break
+      break;
+    }
+    if (boardArray[boardY - i * y][boardX - i * x] == color) {
+      count++;
+    } else {
+      break;
+    } //색이 다르거나 없으면 break
+  }
+  for (let i = 1; i < 4; i++) {
+    if (
+      boardX + i * x < 0 ||
+      boardX + i * x > 8 ||
+      boardY + i * y < 0 ||
+      boardY + i * y > 8
+    ) {
+      break;
+    }
+    if (boardArray[boardY + i * y][boardX + i * x] == color) {
+      count++;
+    } else {
+      break;
+    }
+  }
+  if (count >= 3) {
+    winFlag = true;
+  } //가로방향을 합쳐서 3이상이면(착수된 돌 포함4개) winFlag에 표시
+  return winFlag;
+}
+
+function checkWin(boardX, boardY) {
+  let color = boardArray[boardY][boardX];
+
+  let row = checkWinOnOneDirection(boardX, boardY, color, 1, 0);
+  let col = checkWinOnOneDirection(boardX, boardY, color, 0, 1);
+  let NWtoSE = checkWinOnOneDirection(boardX, boardY, color, 1, 1);
+  let NEtoSW = checkWinOnOneDirection(boardX, boardY, color, 1, -1);
+  let win = row || col || NWtoSE || NEtoSW;
+
+  return {win, color};
+}
+
 function gameReset(){
   boardArray = Array.from(Array(9), () => new Array(9).fill(" "));
   moveHistory = new Array();
@@ -71,6 +124,15 @@ io.on("connection", (socket) => {
     moveHistory.push(MoveInfo);
     boardArray[MoveInfo.y][MoveInfo.x] = MoveInfo.color;
     io.emit("moveReceived",moveHistory);
+    let {win, color} = checkWin(MoveInfo.x,MoveInfo.y)
+    if (win){
+      io.emit("playerWin", color);
+      console.log(color+" win");
+    }//checkwin의 결과가 true라면 이벤트 발생:승리한 플레이어 전송
+    else if (moveHistory.length >= 81){
+      io.emit("playerDraw");
+      console.log("draw");
+    }//move History의 길이가 81이상(턴이 81번 이상 지속되어 보드판이 가득참)이면 비김 
   });
   //moveinfo를 movehistory에 저장하고, movehistory를 모든 플레이어에게 전송
 
